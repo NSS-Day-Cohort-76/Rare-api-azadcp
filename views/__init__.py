@@ -4,3 +4,5 @@ from .tags_view import list_tags, retrieve_tags
 from .category_view import list_categories, retrieve_category
 from .postTags_view import list_postTags, retrieve_postTag
 from .postReactions_view import list_postReactions, retrieve_postReaction
+from .reactions_view import list_reactions, retrieve_reaction
+from .user import list_users, retrieve_user

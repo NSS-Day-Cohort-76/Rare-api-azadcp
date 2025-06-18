@@ -8,6 +8,8 @@ from views import list_tags, retrieve_tags
 from views import list_categories, retrieve_category
 from views import list_postTags, retrieve_postTag
 from views import list_postReactions, retrieve_postReaction
+from views import list_reactions, retrieve_reaction
+from views import list_users, retrieve_user
 
 
 class JSONServer(HandleRequests):
@@ -67,14 +69,7 @@ class JSONServer(HandleRequests):
                 return self.response(
                     retrieve_reaction(url["pk"]), status.HTTP_200_SUCCESS.value
                 )
-            return self.response(list_reactions(), status.HTTP_200_SUCCESS.value)
-
-        elif url["requested_resource"] == "reactions":
-            if url["pk"] != 0:
-                return self.response(
-                    retrieve_reaction(url["pk"]), status.HTTP_200_SUCCESS.value
-                )
-            return self.response(list_reactions(), status.HTTP_200_SUCCESS.value)
+            return self.response(list_reactions(url), status.HTTP_200_SUCCESS.value)
 
         elif url["requested_resource"] == "postReactions":
             if url["pk"] != 0:
