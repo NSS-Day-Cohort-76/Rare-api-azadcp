@@ -137,3 +137,4 @@ INSERT INTO Tags (label) VALUES
 
 INSERT INTO Reactions ('label', 'image_url') VALUES ('happy', 'https://pngtree.com/so/happy');
 
+DELETE FROM Users WHERE first_name == "Jake"
