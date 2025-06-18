@@ -1,0 +1,1 @@
+from .posts_view import list_post, retrieve_post
