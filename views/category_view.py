@@ -2,7 +2,7 @@ import sqlite3
 import json
 
 
-def list_categories(url):
+def list_categories():
     with sqlite3.connect("./db.sqlite3") as conn:
         db_cursor = conn.cursor()
 

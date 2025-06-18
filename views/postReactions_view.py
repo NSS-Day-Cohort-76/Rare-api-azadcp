@@ -2,7 +2,7 @@ import sqlite3
 import json
 
 
-def list_postReactions(url):
+def list_postReactions():
     with sqlite3.connect("./db.sqlite3") as conn:
         db_cursor = conn.cursor()
 

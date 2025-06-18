@@ -2,7 +2,7 @@ import sqlite3
 import json
 
 
-def list_postTags(url):
+def list_postTags():
     with sqlite3.connect("./db.sqlite3") as conn:
         db_cursor = conn.cursor()
 
