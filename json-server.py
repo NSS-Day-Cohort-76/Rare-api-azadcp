@@ -2,6 +2,12 @@ from http.server import HTTPServer
 from nss_handler import HandleRequests, status
 import json
 from views.user import login_user, create_user
+from views import list_subscriptions, retrieve_subscription
+from views import list_comments, retrieve_comment
+from views import list_tags, retrieve_tags
+from views import list_categories, retrieve_category
+from views import list_postTags, retrieve_postTag
+from views import list_postReactions, retrieve_postReaction
 
 
 class JSONServer(HandleRequests):
@@ -40,7 +46,7 @@ class JSONServer(HandleRequests):
                 return self.response(
                     retrieve_subscription(url["pk"]), status.HTTP_200_SUCCESS.value
                 )
-            return self.response(list_subscriptions(), status.HTTP_200_SUCCESS.value)
+            return self.response(list_subscriptions(url), status.HTTP_200_SUCCESS.value)
 
         elif url["requested_resource"] == "posts":
             if url["pk"] != 0:
@@ -54,7 +60,7 @@ class JSONServer(HandleRequests):
                 return self.response(
                     retrieve_comment(url["pk"]), status.HTTP_200_SUCCESS.value
                 )
-            return self.response(list_comments(), status.HTTP_200_SUCCESS.value)
+            return self.response(list_comments(url), status.HTTP_200_SUCCESS.value)
 
         elif url["requested_resource"] == "reactions":
             if url["pk"] != 0:
@@ -75,33 +81,33 @@ class JSONServer(HandleRequests):
                 return self.response(
                     retrieve_postReaction(url["pk"]), status.HTTP_200_SUCCESS.value
                 )
-            return self.response(list_postReactions(), status.HTTP_200_SUCCESS.value)
+            return self.response(list_postReactions(url), status.HTTP_200_SUCCESS.value)
 
         elif url["requested_resource"] == "tags":
             if url["pk"] != 0:
                 return self.response(
-                    retrieve_tag(url["pk"]), status.HTTP_200_SUCCESS.value
+                    retrieve_tags(url["pk"]), status.HTTP_200_SUCCESS.value
                 )
-            return self.response(list_tags(), status.HTTP_200_SUCCESS.value)
+            return self.response(list_tags(url), status.HTTP_200_SUCCESS.value)
 
         elif url["requested_resource"] == "postTags":
             if url["pk"] != 0:
                 return self.response(
                     retrieve_postTag(url["pk"]), status.HTTP_200_SUCCESS.value
                 )
-            return self.response(list_postTags(), status.HTTP_200_SUCCESS.value)
+            return self.response(list_postTags(url), status.HTTP_200_SUCCESS.value)
 
         elif url["requested_resource"] == "categories":
             if url["pk"] != 0:
                 return self.response(
                     retrieve_category(url["pk"]), status.HTTP_200_SUCCESS.value
                 )
-            return self.response(list_categories(), status.HTTP_200_SUCCESS.value)
+            return self.response(list_categories(url), status.HTTP_200_SUCCESS.value)
 
         else:
             return self.response(
                 json.dumps({"message": "Not Implemented"}),
-                status.HTTP_501_SERVER_ERROR.value,
+                status.HTTP_500_SERVER_ERROR.value,
             )
 
 
