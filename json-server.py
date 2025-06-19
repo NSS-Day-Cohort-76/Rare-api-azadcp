@@ -5,6 +5,7 @@ from views.user import login_user, create_user
 
 from views import list_post, retrieve_post
 
+
 class JSONServer(HandleRequests):
 
     def do_POST(self):

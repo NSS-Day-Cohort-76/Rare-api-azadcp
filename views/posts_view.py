@@ -1,6 +1,7 @@
 import json
 import sqlite3
 
+
 def list_post():
     with sqlite3.connect("./db.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
@@ -21,7 +22,7 @@ def list_post():
         )
         query_results = db_cursor.fetchall()
 
-        posts= []
+        posts = []
         for row in query_results:
             posts.append(dict(row))
 
@@ -30,6 +31,7 @@ def list_post():
 
     return serialized_posts
 
+
 def retrieve_post(pk):
     with sqlite3.connect("./db.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
@@ -37,20 +39,17 @@ def retrieve_post(pk):
 
         db_cursor.execute(
             """
-        SELECT
-            p.id,
-            p.user_id,
-            p.category,
-            p.title,
-            p.publication_date,
-            p.content
-        FROM "Posts" p
-        WHERE id = ? 
+            SELECT 
+                p.id, p.title, p.content, p.image_url, p.publication_date,
+                u.first_name || ' ' || u.last_name AS author_name
+            FROM Posts p
+            JOIN Users u ON u.id = p.user_id
+            WHERE p.id = ?
         """,
             (pk,),
         )
         query_results = db_cursor.fetchone()
         dictionary_version_as_obj = dict(query_results)
         serialized_post = json.dumps(dictionary_version_as_obj)
-    
+
     return serialized_post
