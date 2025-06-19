@@ -113,6 +113,7 @@ def retrieve_user(pk, url=None):
                 u.bio,
                 u.username,
                 u.password,
+                u.profile_image_url,
                 u.created_on,
                 u.active
             FROM Users u

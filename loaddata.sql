@@ -81,6 +81,7 @@ CREATE TABLE "PostTags" (
 );
 
 CREATE TABLE "Categories" (
+
   "id" INTEGER PRIMARY KEY AUTOINCREMENT,
   "label" varchar
 );
@@ -154,3 +155,11 @@ UPDATE Users SET isAdmin = 0, isAuthor = 1 WHERE username = 'jkim';
 
 
 UPDATE Users SET isAdmin = 0, isAuthor = 1 WHERE username = 'mray';
+
+
+
+UPDATE Users
+SET profile_image_url = 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg'
+WHERE id = 2;
+
+SELECT id, username, profile_image_url FROM Users WHERE id = 2;
