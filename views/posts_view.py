@@ -1,34 +1,56 @@
 import json
 import sqlite3
 
+
 def list_post():
     with sqlite3.connect("./db.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
 
+        # First: fetch posts with author name and category label
         db_cursor.execute(
             """
-        SELECT
-            p.id,
-            p.user_id,
-            p.category_id,
-            p.title,
-            p.publication_date,
-            p.image_url,
-            p.content
-        FROM "Posts" p
-        """
+            SELECT
+                p.id,
+                p.user_id,
+                u.first_name || ' ' || u.last_name AS author_name,
+                p.category_id,
+                c.label AS category,
+                p.title,
+                p.publication_date,
+                p.image_url,
+                p.content
+            FROM Posts p
+            JOIN Users u ON p.user_id = u.id
+            JOIN Categories c ON p.category_id = c.id
+            """
         )
-        query_results = db_cursor.fetchall()
+        posts_raw = db_cursor.fetchall()
+        posts = [dict(row) for row in posts_raw]
 
-        posts= []
-        for row in query_results:
-            posts.append(dict(row))
+        # Then: fetch all post-tag relationships
+        db_cursor.execute(
+            """
+            SELECT
+                pt.post_id,
+                t.label AS tag
+            FROM PostTags pt
+            JOIN Tags t ON pt.tag_id = t.id
+            """
+        )
+        tag_rows = db_cursor.fetchall()
 
-        # Serialize Python list to JSON encoded string
-        serialized_posts = json.dumps(posts)
+        # Build a dictionary of post_id to tags
+        tag_map = {}
+        for row in tag_rows:
+            tag_map.setdefault(row["post_id"], []).append(row["tag"])
 
-    return serialized_posts
+        # Attach tags to each post
+        for post in posts:
+            post["tags"] = tag_map.get(post["id"], [])
+
+        return json.dumps(posts)
+
 
 def retrieve_post(pk):
     with sqlite3.connect("./db.sqlite3") as conn:
