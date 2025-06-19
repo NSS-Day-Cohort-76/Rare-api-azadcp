@@ -87,11 +87,13 @@ CREATE TABLE "Categories" (
 
 INSERT INTO Users (first_name, last_name, email, bio, username, password, profile_image_url, created_on, active)
 VALUES 
-('Jamie', 'Smith', 'jamie@example.com', 'Photographer and foodie.', 'jamies', 'password123', '', '2025-06-01', 1),
-('Riley', 'Jones', 'riley@example.com', 'Lover of coffee and cats.', 'rjones', 'password123', '', '2025-06-02', 1),
-('Taylor', 'Lee', 'taylor@example.com', 'News junkie and podcast addict.', 'tlee', 'password123', '', '2025-06-03', 1),
-('Jordan', 'Kim', 'jordan@example.com', 'DIY enthusiast. Posts every Sunday.', 'jkim', 'password123', '', '2025-06-04', 1),
-('Morgan', 'Ray', 'morgan@example.com', 'Weekend brunch warrior.', 'mray', 'password123', '', '2025-06-05', 1);
+('Jamie', 'Smith', 'jamie@example.com', 'Photographer and foodie.', 'jamies', 'password123', '', '2025-06-01', 1, 1, 1),
+('Riley', 'Jones', 'riley@example.com', 'Lover of coffee and cats.', 'rjones', 'password123', '', '2025-06-02', 1, 1, 1),
+('Taylor', 'Lee', 'taylor@example.com', 'News junkie and podcast addict.', 'tlee', 'password123', '', '2025-06-03', 1, 1, 1),
+('Jordan', 'Kim', 'jordan@example.com', 'DIY enthusiast. Posts every Sunday.', 'jkim', 'password123', '', '2025-06-04', 1, 1, 1),
+('Morgan', 'Ray', 'morgan@example.com', 'Weekend brunch warrior.', 'mray', 'password123', '', '2025-06-05', 1, 1, 1);
+ALTER TABLE Users ADD COLUMN isAdmin BOOLEAN DEFAULT 0;
+ALTER TABLE Users ADD COLUMN isAuthor BOOLEAN DEFAULT 0;
 
 INSERT INTO Posts (id, user_id, category_id, title, publication_date, image_url, content, approved)
 VALUES
@@ -138,3 +140,17 @@ INSERT INTO Tags (label) VALUES
 INSERT INTO Reactions ('label', 'image_url') VALUES ('happy', 'https://pngtree.com/so/happy');
 
 DELETE FROM Users WHERE first_name == "Jake"
+
+UPDATE Users SET isAdmin = 1, isAuthor = 1 WHERE username = 'jamies';
+
+
+UPDATE Users SET isAdmin = 0, isAuthor = 1 WHERE username = 'rjones';
+
+
+UPDATE Users SET isAdmin = 0, isAuthor = 1 WHERE username = 'tlee';
+
+
+UPDATE Users SET isAdmin = 0, isAuthor = 1 WHERE username = 'jkim';
+
+
+UPDATE Users SET isAdmin = 0, isAuthor = 1 WHERE username = 'mray';
