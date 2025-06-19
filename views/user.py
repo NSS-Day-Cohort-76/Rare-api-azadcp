@@ -86,8 +86,11 @@ def list_users():
                 u.username,
                 u.password,
                 u.created_on,
-                u.active
+                u.active,
+                u.isAuthor,
+                u.isAdmin
             FROM Users u
+            ORDER BY u.username ASC
             
             """
         )
