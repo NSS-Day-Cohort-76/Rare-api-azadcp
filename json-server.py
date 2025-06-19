@@ -11,6 +11,7 @@ from views import list_postReactions, retrieve_postReaction
 from views import list_reactions, retrieve_reaction
 from views import list_users, retrieve_user
 
+from views import list_post, retrieve_post
 
 class JSONServer(HandleRequests):
 
@@ -36,41 +37,63 @@ class JSONServer(HandleRequests):
     def do_GET(self):
         url = self.parse_url(self.path)
 
-        if url["requested_resource"] == "users":
-            if url["pk"] != 0:
-                return self.response(
-                    retrieve_user(url["pk"]), status.HTTP_200_SUCCESS.value
-                )
-            return self.response(list_users(), status.HTTP_200_SUCCESS.value)
+        # if url["requested_resource"] == "users":
+        #     if url["pk"] != 0:
+        #         return self.response(
+        #             retrieve_user(url["pk"]), status.HTTP_200_SUCCESS.value
+        #         )
+        #     return self.response(list_users(), status.HTTP_200_SUCCESS.value)
 
-        elif url["requested_resource"] == "subscriptions":
-            if url["pk"] != 0:
-                return self.response(
-                    retrieve_subscription(url["pk"]), status.HTTP_200_SUCCESS.value
-                )
-            return self.response(list_subscriptions(), status.HTTP_200_SUCCESS.value)
+        # elif url["requested_resource"] == "subscriptions":
+        #     if url["pk"] != 0:
+        #         return self.response(
+        #             retrieve_subscription(url["pk"]), status.HTTP_200_SUCCESS.value
+        #         )
+        #     return self.response(list_subscriptions(), status.HTTP_200_SUCCESS.value)
 
-        elif url["requested_resource"] == "posts":
+        if url["requested_resource"] == "posts":
             if url["pk"] != 0:
                 return self.response(
                     retrieve_post(url["pk"]), status.HTTP_200_SUCCESS.value
                 )
-            return self.response(list_posts(), status.HTTP_200_SUCCESS.value)
+            return self.response(list_post(), status.HTTP_200_SUCCESS.value)
 
-        elif url["requested_resource"] == "comments":
-            if url["pk"] != 0:
-                return self.response(
-                    retrieve_comment(url["pk"]), status.HTTP_200_SUCCESS.value
-                )
-            return self.response(list_comments(), status.HTTP_200_SUCCESS.value)
+        # elif url["requested_resource"] == "comments":
+        #     if url["pk"] != 0:
+        #         return self.response(
+        #             retrieve_comment(url["pk"]), status.HTTP_200_SUCCESS.value
+        #         )
+        #     return self.response(list_comments(), status.HTTP_200_SUCCESS.value)
 
-        elif url["requested_resource"] == "reactions":
-            if url["pk"] != 0:
-                return self.response(
-                    retrieve_reaction(url["pk"]), status.HTTP_200_SUCCESS.value
-                )
-            return self.response(list_reactions(), status.HTTP_200_SUCCESS.value)
+        # elif url["requested_resource"] == "reactions":
+        #     if url["pk"] != 0:
+        #         return self.response(
+        #             retrieve_reaction(url["pk"]), status.HTTP_200_SUCCESS.value
+        #         )
+        #     return self.response(list_reactions(), status.HTTP_200_SUCCESS.value)
 
+<<<<<<< HEAD
+        # elif url["requested_resource"] == "reactions":
+        #     if url["pk"] != 0:
+        #         return self.response(
+        #             retrieve_reaction(url["pk"]), status.HTTP_200_SUCCESS.value
+        #         )
+        #     return self.response(list_reactions(), status.HTTP_200_SUCCESS.value)
+
+        # elif url["requested_resource"] == "postReactions":
+        #     if url["pk"] != 0:
+        #         return self.response(
+        #             retrieve_postReaction(url["pk"]), status.HTTP_200_SUCCESS.value
+        #         )
+        #     return self.response(list_postReactions(), status.HTTP_200_SUCCESS.value)
+
+        # elif url["requested_resource"] == "tags":
+        #     if url["pk"] != 0:
+        #         return self.response(
+        #             retrieve_tag(url["pk"]), status.HTTP_200_SUCCESS.value
+        #         )
+        #     return self.response(list_tags(), status.HTTP_200_SUCCESS.value)
+=======
         elif url["requested_resource"] == "postReactions":
             if url["pk"] != 0:
                 return self.response(
@@ -84,20 +107,21 @@ class JSONServer(HandleRequests):
                     retrieve_tags(url["pk"]), status.HTTP_200_SUCCESS.value
                 )
             return self.response(list_tags(), status.HTTP_200_SUCCESS.value)
+>>>>>>> develop
 
-        elif url["requested_resource"] == "postTags":
-            if url["pk"] != 0:
-                return self.response(
-                    retrieve_postTag(url["pk"]), status.HTTP_200_SUCCESS.value
-                )
-            return self.response(list_postTags(), status.HTTP_200_SUCCESS.value)
+        # elif url["requested_resource"] == "postTags":
+        #     if url["pk"] != 0:
+        #         return self.response(
+        #             retrieve_postTag(url["pk"]), status.HTTP_200_SUCCESS.value
+        #         )
+        #     return self.response(list_postTags(), status.HTTP_200_SUCCESS.value)
 
-        elif url["requested_resource"] == "categories":
-            if url["pk"] != 0:
-                return self.response(
-                    retrieve_category(url["pk"]), status.HTTP_200_SUCCESS.value
-                )
-            return self.response(list_categories(), status.HTTP_200_SUCCESS.value)
+        # elif url["requested_resource"] == "categories":
+        #     if url["pk"] != 0:
+        #         return self.response(
+        #             retrieve_category(url["pk"]), status.HTTP_200_SUCCESS.value
+        #         )
+        #     return self.response(list_categories(), status.HTTP_200_SUCCESS.value)
 
         else:
             return self.response(
