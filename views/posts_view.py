@@ -40,7 +40,7 @@ def retrieve_post(pk):
         SELECT
             p.id,
             p.user_id,
-            p.category,
+            p.category_id,
             p.title,
             p.publication_date,
             p.content
@@ -50,6 +50,8 @@ def retrieve_post(pk):
             (pk,),
         )
         query_results = db_cursor.fetchone()
+        if query_results is None:
+            return json.dumps({"error": "Post not found"})
         dictionary_version_as_obj = dict(query_results)
         serialized_post = json.dumps(dictionary_version_as_obj)
     
