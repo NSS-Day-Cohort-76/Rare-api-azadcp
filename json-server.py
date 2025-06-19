@@ -4,7 +4,7 @@ import json
 from views.user import login_user, create_user
 from views import list_subscriptions, retrieve_subscription
 from views import list_comments, retrieve_comment
-from views import list_tags, retrieve_tags
+from views import list_tags, retrieve_tags, create_tag
 from views import list_categories, retrieve_category
 from views import list_postTags, retrieve_postTag
 from views import list_postReactions, retrieve_postReaction
@@ -27,6 +27,9 @@ class JSONServer(HandleRequests):
 
         if url["requested_resource"] == "register":
             response = create_user(request_body)
+            return self.response(response, status.HTTP_201_SUCCESS_CREATED.value)
+        if url["requested_resource"] == "tags":
+            response = create_tag(request_body)
             return self.response(response, status.HTTP_201_SUCCESS_CREATED.value)
 
         return self.response(
