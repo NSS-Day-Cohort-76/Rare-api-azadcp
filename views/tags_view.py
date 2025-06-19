@@ -22,7 +22,8 @@ def list_tags():
         serialized_tags = json.dumps(tags)
     return serialized_tags
 
-def retrieve_tags(pk, url=None):
+
+def retrieve_tag(pk):
     with sqlite3.connect("./db.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
@@ -30,13 +31,12 @@ def retrieve_tags(pk, url=None):
             """
             SELECT
                 t.id,
-                t.label,
-                
+                t.label
             FROM Tags t
             WHERE t.id = ?
-            """, (pk,)
+            """,
+            (pk,),
         )
         query_results = db_cursor.fetchone()
         dictionary_version = dict(query_results)
-        serial_t = json.dumps(dictionary_version)
-    return serial_t
+        return json.dumps(dictionary_version)
