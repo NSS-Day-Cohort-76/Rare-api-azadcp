@@ -2,6 +2,14 @@ from http.server import HTTPServer
 from nss_handler import HandleRequests, status
 import json
 from views.user import login_user, create_user
+from views import list_subscriptions, retrieve_subscription
+from views import list_comments, retrieve_comment
+from views import list_tags, retrieve_tags
+from views import list_categories, retrieve_category
+from views import list_postTags, retrieve_postTag
+from views import list_postReactions, retrieve_postReaction
+from views import list_reactions, retrieve_reaction
+from views import list_users, retrieve_user
 
 from views import list_post, retrieve_post
 
@@ -64,6 +72,7 @@ class JSONServer(HandleRequests):
         #         )
         #     return self.response(list_reactions(), status.HTTP_200_SUCCESS.value)
 
+<<<<<<< HEAD
         # elif url["requested_resource"] == "reactions":
         #     if url["pk"] != 0:
         #         return self.response(
@@ -84,6 +93,21 @@ class JSONServer(HandleRequests):
         #             retrieve_tag(url["pk"]), status.HTTP_200_SUCCESS.value
         #         )
         #     return self.response(list_tags(), status.HTTP_200_SUCCESS.value)
+=======
+        elif url["requested_resource"] == "postReactions":
+            if url["pk"] != 0:
+                return self.response(
+                    retrieve_postReaction(url["pk"]), status.HTTP_200_SUCCESS.value
+                )
+            return self.response(list_postReactions(), status.HTTP_200_SUCCESS.value)
+
+        elif url["requested_resource"] == "tags":
+            if url["pk"] != 0:
+                return self.response(
+                    retrieve_tags(url["pk"]), status.HTTP_200_SUCCESS.value
+                )
+            return self.response(list_tags(), status.HTTP_200_SUCCESS.value)
+>>>>>>> develop
 
         # elif url["requested_resource"] == "postTags":
         #     if url["pk"] != 0:

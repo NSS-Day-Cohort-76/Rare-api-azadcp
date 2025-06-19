@@ -69,3 +69,54 @@ def create_user(user):
             'token': id,
             'valid': True
         })
+
+def list_users():
+    with sqlite3.connect("./db.sqlite3") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+        
+        db_cursor.execute(
+            """
+            SELECT
+                u.id,
+                u.first_name,
+                u.last_name,
+                u.email,
+                u.bio,
+                u.username,
+                u.password,
+                u.created_on,
+                u.active
+            FROM Users u
+            
+            """
+        )
+        query_results = db_cursor.fetchall()
+        post_reactions = [dict(row) for row in query_results]
+        serialized_post_reactions = json.dumps(post_reactions)
+    return serialized_post_reactions
+
+def retrieve_user(pk, url=None):
+    with sqlite3.connect("./db.sqlite3") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+        db_cursor.execute(
+            """
+             SELECT
+                u.id,
+                u.first_name,
+                u.last_name,
+                u.email,
+                u.bio,
+                u.username,
+                u.password,
+                u.created_on,
+                u.active
+            FROM Users u
+            WHERE u.id = ?
+            """, (pk,)
+        )
+        query_results = db_cursor.fetchone()
+        dictionary_version = dict(query_results)
+        serial_user = json.dumps(dictionary_version)
+    return serial_user
