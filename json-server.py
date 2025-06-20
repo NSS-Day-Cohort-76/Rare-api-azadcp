@@ -134,20 +134,3 @@ if __name__ == "__main__":
     main()
 
 
-# import sqlite3
-
-#             with sqlite3.connect("./db.sqlite3") as conn:
-#                 conn.row_factory = sqlite3.Row
-#                 db_cursor = conn.cursor()
-
-#                 db_cursor.execute("SELECT id, username, email FROM Users")
-
-#                 users = db_cursor.fetchall()
-#                 user_list = [dict(u) for u in users]
-
-#             return self.response(json.dumps(user_list), status.HTTP_200_SUCCESS.value)
-
-#         return self.response(
-#             json.dumps({"message": "Not Implemented"}),
-#             status.HTTP_501_SERVER_ERROR.value,
-#         )
