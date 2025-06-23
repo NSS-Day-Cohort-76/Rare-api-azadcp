@@ -43,5 +43,15 @@ def retrieve_category(pk, url=None):
         serial_category = json.dumps(dictionary_version)
     return serial_category
 
+def create_category(request_body):
+    with sqlite3.connect("./db.sqlite3") as conn:
+        db_cursor = conn.cursor()
+
+        db_cursor.execute("""
+            INSERT INTO Category (label)
+            VALUES (?)
+        """)
+
+
 
 # print(f"contents of ${list_categories()}")
