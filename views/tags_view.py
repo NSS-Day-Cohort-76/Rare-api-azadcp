@@ -4,17 +4,16 @@ import json
 
 def list_tags():
     with sqlite3.connect("./db.sqlite3") as conn:
+        conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
 
         db_cursor.execute(
             """
             SELECT
                 t.id,
-                t.label,
-                
-                
+                t.label
             FROM Tags t
-            
+            ORDER BY t.label ASC
             """
         )
         query_results = db_cursor.fetchall()
@@ -23,7 +22,7 @@ def list_tags():
     return serialized_tags
 
 
-def retrieve_tags(pk, _url=None):
+def retrieve_tags(pk, url=None):
     with sqlite3.connect("./db.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
@@ -31,8 +30,7 @@ def retrieve_tags(pk, _url=None):
             """
             SELECT
                 t.id,
-                t.label,
-                
+                t.label
             FROM Tags t
             WHERE t.id = ?
             """,
@@ -44,4 +42,18 @@ def retrieve_tags(pk, _url=None):
     return serial_t
 
 
-print(f"checking out ")
+def create_tag(tag_data):
+    with sqlite3.connect("./db.sqlite3") as conn:
+        db_cursor = conn.cursor()
+
+        db_cursor.execute(
+            """
+            INSERT INTO Tags ( label)
+            VALUES ( ? )
+            """,
+            (tag_data["label"],),
+        )
+        new_id = db_cursor.lastrowid
+
+        new_tag = {"id": new_id, "label": tag_data["label"]}
+        return json.dumps(new_tag)

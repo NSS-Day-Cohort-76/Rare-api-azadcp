@@ -86,8 +86,11 @@ def list_users():
                 u.username,
                 u.password,
                 u.created_on,
-                u.active
+                u.active,
+                u.isAuthor,
+                u.isAdmin
             FROM Users u
+            ORDER BY u.username ASC
             
             """
         )
@@ -111,6 +114,7 @@ def retrieve_user(pk, _url=None):
                 u.bio,
                 u.username,
                 u.password,
+                u.profile_image_url,
                 u.created_on,
                 u.active
             FROM Users u

@@ -4,7 +4,7 @@ import json
 from views.user import login_user, create_user
 from views import list_subscriptions, retrieve_subscription
 from views import list_comments, retrieve_comment
-from views import list_tags, retrieve_tags
+from views import list_tags, retrieve_tags, create_tag
 from views import list_categories, retrieve_category
 from views import list_postTags, retrieve_postTag
 from views import list_postReactions, retrieve_postReaction
@@ -28,6 +28,9 @@ class JSONServer(HandleRequests):
 
         if url["requested_resource"] == "register":
             response = create_user(request_body)
+            return self.response(response, status.HTTP_201_SUCCESS_CREATED.value)
+        if url["requested_resource"] == "tags":
+            response = create_tag(request_body)
             return self.response(response, status.HTTP_201_SUCCESS_CREATED.value)
 
         return self.response(
@@ -130,23 +133,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-print(f"contents of ${list_categories()}")
-
-# import sqlite3
-
-#             with sqlite3.connect("./db.sqlite3") as conn:
-#                 conn.row_factory = sqlite3.Row
-#                 db_cursor = conn.cursor()
-
-#                 db_cursor.execute("SELECT id, username, email FROM Users")
-
-#                 users = db_cursor.fetchall()
-#                 user_list = [dict(u) for u in users]
-
-#             return self.response(json.dumps(user_list), status.HTTP_200_SUCCESS.value)
-
-#         return self.response(
-#             json.dumps({"message": "Not Implemented"}),
-#             status.HTTP_501_SERVER_ERROR.value,
-#         )

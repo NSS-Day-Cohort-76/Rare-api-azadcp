@@ -12,6 +12,7 @@ def list_categories():
             SELECT
                 c.id,
                 c.label
+                
             FROM Categories c
             
             """
