@@ -21,6 +21,7 @@ def list_tags():
         serialized_tags = json.dumps(tags)
     return serialized_tags
 
+
 def retrieve_tags(pk, url=None):
     with sqlite3.connect("./db.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
@@ -32,7 +33,8 @@ def retrieve_tags(pk, url=None):
                 t.label
             FROM Tags t
             WHERE t.id = ?
-            """, (pk,)
+            """,
+            (pk,),
         )
         query_results = db_cursor.fetchone()
         dictionary_version = dict(query_results)
@@ -49,15 +51,9 @@ def create_tag(tag_data):
             INSERT INTO Tags ( label)
             VALUES ( ? )
             """,
-            (tag_data['label'],)
-
+            (tag_data["label"],),
         )
         new_id = db_cursor.lastrowid
-        
-        new_tag = {
-            "id": new_id,
-            "label": tag_data['label']
-            
 
-        }
+        new_tag = {"id": new_id, "label": tag_data["label"]}
         return json.dumps(new_tag)

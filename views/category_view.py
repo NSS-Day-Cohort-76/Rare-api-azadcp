@@ -7,7 +7,6 @@ def list_categories():
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
 
-
         db_cursor.execute(
             """
             SELECT
@@ -23,6 +22,7 @@ def list_categories():
         serialized_categories = json.dumps(categories)
     return serialized_categories
 
+
 def retrieve_category(pk, url=None):
     with sqlite3.connect("./db.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
@@ -35,9 +35,13 @@ def retrieve_category(pk, url=None):
                 
             FROM Categories c
             WHERE c.id = ?
-            """, (pk,)
+            """,
+            (pk,),
         )
         query_results = db_cursor.fetchone()
         dictionary_version = dict(query_results)
         serial_category = json.dumps(dictionary_version)
     return serial_category
+
+
+# print(f"contents of ${list_categories()}")

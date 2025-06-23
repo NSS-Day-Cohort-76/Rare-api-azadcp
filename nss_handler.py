@@ -1,6 +1,7 @@
 from enum import Enum
 from urllib.parse import urlparse, parse_qs
 from http.server import BaseHTTPRequestHandler
+import json
 
 
 class status(Enum):
@@ -16,6 +17,8 @@ class HandleRequests(BaseHTTPRequestHandler):
 
     def response(self, body, code):
         self.set_response_code(code)
+        if not isinstance(body, str):
+            body = json.dumps(body)
         self.wfile.write(body.encode())
 
     def parse_url(self, path):
@@ -38,8 +41,8 @@ class HandleRequests(BaseHTTPRequestHandler):
 
         return url_dictionary
 
-    def set_response_code(self, status):
-        self.send_response(status)
+    def set_response_code(self, response_code):
+        self.send_response(response_code)
         self.send_header("Content-type", "application/json")
         self.send_header("Access-Control-Allow-Origin", "*")
         self.end_headers()

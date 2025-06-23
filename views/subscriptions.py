@@ -22,6 +22,7 @@ def list_subscriptions():
         serialized_subs = json.dumps(subscriptions)
     return serialized_subs
 
+
 def retrieve_subscription(pk, url=None):
     with sqlite3.connect("./db.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
@@ -35,7 +36,8 @@ def retrieve_subscription(pk, url=None):
                 s.created_on
             FROM Subscriptions s
             WHERE s.id = ?
-            """, (pk,)
+            """,
+            (pk,),
         )
         query_results = db_cursor.fetchone()
         dictionary_version = dict(query_results)

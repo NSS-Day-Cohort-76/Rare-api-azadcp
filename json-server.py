@@ -13,6 +13,7 @@ from views import list_users, retrieve_user
 
 from views import list_post, retrieve_post
 
+
 class JSONServer(HandleRequests):
 
     def do_POST(self):
@@ -132,5 +133,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
