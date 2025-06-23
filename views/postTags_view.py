@@ -22,6 +22,7 @@ def list_postTags():
         serialized_postTags = json.dumps(postTags)
     return serialized_postTags
 
+
 def retrieve_postTag(pk, url=None):
     with sqlite3.connect("./db.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
@@ -35,7 +36,8 @@ def retrieve_postTag(pk, url=None):
                 p.created_on
             FROM PostTags p
             WHERE p.id = ?
-            """, (pk,)
+            """,
+            (pk,),
         )
         query_results = db_cursor.fetchone()
         dictionary_version = dict(query_results)

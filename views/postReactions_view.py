@@ -22,6 +22,7 @@ def list_postReactions():
         serialized_post_reactions = json.dumps(post_reactions)
     return serialized_post_reactions
 
+
 def retrieve_postReaction(pk, url=None):
     with sqlite3.connect("./db.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
@@ -35,7 +36,8 @@ def retrieve_postReaction(pk, url=None):
                 p.post_id
             FROM PostReactions p
             WHERE p.id = ?
-            """, (pk,)
+            """,
+            (pk,),
         )
         query_results = db_cursor.fetchone()
         dictionary_version = dict(query_results)

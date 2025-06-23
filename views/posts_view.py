@@ -52,6 +52,54 @@ def list_post():
         return json.dumps(posts)
 
 
+# def retrieve_post(pk):
+#     with sqlite3.connect("./db.sqlite3") as conn:
+#         conn.row_factory = sqlite3.Row
+#         db_cursor = conn.cursor()
+
+#         # Get post + author
+#         db_cursor.execute(
+#             """
+#             SELECT
+#                 p.id,
+#                 p.user_id,
+#                 p.category_id,
+#                 p.title,
+#                 p.publication_date,
+#                 p.image_url,
+#                 p.content,
+#                 p.approved,
+#                 u.first_name || ' ' || u.last_name AS author_name,
+#                 u.username
+#             FROM Posts p
+#             JOIN Users u ON p.user_id = u.id
+#             WHERE p.id = ?
+#             """,
+#             (pk,),
+#         )
+
+#         query_results = db_cursor.fetchone()
+#         if query_results is None:
+#             return json.dumps({"error": "Post not found"})
+
+#         post_dict = dict(query_results)
+
+#         # Attach tags if any
+#         db_cursor.execute(
+#             """
+#             SELECT t.label AS tag
+#             FROM PostTags pt
+#             JOIN Tags t ON pt.tag_id = t.id
+#             WHERE pt.post_id = ?
+#             """,
+#             (pk,),
+#         )
+#         tag_rows = db_cursor.fetchall()
+#         post_dict["tags"] = [row["tag"] for row in tag_rows]
+
+#     return json.dumps(post_dict)
+
+
 def retrieve_post(pk):
     with sqlite3.connect("./db.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
@@ -59,22 +107,36 @@ def retrieve_post(pk):
 
         db_cursor.execute(
             """
-        SELECT
-            p.id,
-            p.user_id,
-            p.category_id,
-            p.title,
-            p.publication_date,
-            p.content
-        FROM "Posts" p
-        WHERE id = ? 
-        """,
+            SELECT
+                p.id,
+                p.user_id,
+                p.category_id,
+                p.title,
+                p.publication_date,
+                p.image_url,
+                p.content,
+                p.approved,
+                u.first_name || ' ' || u.last_name AS author_name,
+                u.username
+            FROM Posts p
+            JOIN Users u ON p.user_id = u.id
+            WHERE p.id = ?
+            """,
             (pk,),
         )
-        query_results = db_cursor.fetchone()
-        if query_results is None:
-            return json.dumps({"error": "Post not found"})
-        dictionary_version_as_obj = dict(query_results)
-        serialized_post = json.dumps(dictionary_version_as_obj)
-    
-    return serialized_post
+
+        data = db_cursor.fetchone()
+        if data:
+            return dict(data)
+        return {}
+
+    #     query_results = db_cursor.fetchone()
+    #     if query_results is None:
+    #         return json.dumps({"error": "Post not found"})
+    #     dictionary_version_as_obj = dict(query_results)
+    #     serialized_post = json.dumps(dictionary_version_as_obj)
+
+    # return serialized_post
+
+
+# print(f"contents of ${retrieve_post(2)}")
