@@ -11,7 +11,7 @@ from views import list_postReactions, retrieve_postReaction
 from views import list_reactions, retrieve_reaction
 from views import list_users, retrieve_user
 
-from views import list_post, retrieve_post
+from views import list_post, retrieve_post, create_post
 
 
 class JSONServer(HandleRequests):
@@ -31,6 +31,9 @@ class JSONServer(HandleRequests):
             return self.response(response, status.HTTP_201_SUCCESS_CREATED.value)
         if url["requested_resource"] == "tags":
             response = create_tag(request_body)
+            return self.response(response, status.HTTP_201_SUCCESS_CREATED.value)
+        if url["requested_resource"] == "posts":
+            response = create_post(request_body)
             return self.response(response, status.HTTP_201_SUCCESS_CREATED.value)
 
         return self.response(
