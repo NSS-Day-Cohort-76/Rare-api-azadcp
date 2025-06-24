@@ -36,6 +36,10 @@ class JSONServer(HandleRequests):
             response = create_post(request_body)
             return self.response(response, status.HTTP_201_SUCCESS_CREATED.value)
 
+        if url["requested_resource"] == "categories":
+            response = create_category(request_body)
+            return self.response(response, status.HTTP_201_SUCCESS_CREATED.value)
+
         return self.response(
             json.dumps({"message": "Not found"}),
             status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
