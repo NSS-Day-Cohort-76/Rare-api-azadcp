@@ -50,7 +50,14 @@ def create_category(request_body):
         db_cursor.execute("""
             INSERT INTO Category (label)
             VALUES (?)
-        """)
+        """, (request_body["label"],))
+
+        category_id = db_cursor.lastrowid
+
+        return json.dumps({
+            "id": category_id
+            "label": request_body["label"]
+        })
 
 
 
