@@ -4,14 +4,19 @@ import json
 from views.user import login_user, create_user
 from views import list_subscriptions, retrieve_subscription
 from views import list_comments, retrieve_comment
+<<<<<<< HEAD
 from views import list_tags, retrieve_tags, create_tag
 from views import list_categories, retrieve_category, create_category
+=======
+from views import list_tags, retrieve_tags, create_tag, update_tag, delete_tag
+from views import list_categories, retrieve_category
+>>>>>>> develop
 from views import list_postTags, retrieve_postTag
 from views import list_postReactions, retrieve_postReaction
 from views import list_reactions, retrieve_reaction
 from views import list_users, retrieve_user
 
-from views import list_post, retrieve_post
+from views import list_post, retrieve_post, create_post
 
 
 class JSONServer(HandleRequests):
@@ -31,6 +36,9 @@ class JSONServer(HandleRequests):
             return self.response(response, status.HTTP_201_SUCCESS_CREATED.value)
         if url["requested_resource"] == "tags":
             response = create_tag(request_body)
+            return self.response(response, status.HTTP_201_SUCCESS_CREATED.value)
+        if url["requested_resource"] == "posts":
+            response = create_post(request_body)
             return self.response(response, status.HTTP_201_SUCCESS_CREATED.value)
 
         if url["requested_resource"] == "categories":
@@ -127,6 +135,41 @@ class JSONServer(HandleRequests):
                 json.dumps({"message": "Not Implemented"}),
                 status.HTTP_500_SERVER_ERROR.value,
             )
+    
+    def do_PUT(self):
+        url = self.parse_url(self.path)
+        pk = url["pk"]
+        content_len = int(self.headers.get('content-length', 0))
+        request_body = self.rfile.read(content_len)
+        request_body = json.loads(request_body)
+
+        if url["requested_resource"] == "tags":
+            if pk != 0:
+                successfully_updated = update_tag(pk, request_body)
+                if successfully_updated:
+                    return self.response("", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value)
+                else:
+                    return self.response(
+                        json.dumps({"message": "Tag not found or not updated"}),
+                        status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value)
+            else:
+                return self.response(
+                        json.dumps({"message": "Requested resource not found"}),
+                        status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
+                    )
+    
+    def do_DELETE(self):
+        url = self.parse_url(self.path)
+        pk = url["pk"]
+
+        if url["requested_resource"] == "tags":
+            if pk != 0:
+                successfully_deleted = delete_tag(pk)
+                if successfully_deleted:
+                    return self.response("", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value)
+
+                return self.response("Requested resource not found", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value)
+                
 
 
 def main():
