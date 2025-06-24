@@ -4,13 +4,8 @@ import json
 from views.user import login_user, create_user
 from views import list_subscriptions, retrieve_subscription
 from views import list_comments, retrieve_comment
-<<<<<<< HEAD
-from views import list_tags, retrieve_tags, create_tag
-from views import list_categories, retrieve_category, create_category
-=======
 from views import list_tags, retrieve_tags, create_tag, update_tag, delete_tag
 from views import list_categories, retrieve_category
->>>>>>> develop
 from views import list_postTags, retrieve_postTag
 from views import list_postReactions, retrieve_postReaction
 from views import list_reactions, retrieve_reaction
