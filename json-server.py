@@ -29,9 +29,11 @@ class JSONServer(HandleRequests):
         if url["requested_resource"] == "register":
             response = create_user(request_body)
             return self.response(response, status.HTTP_201_SUCCESS_CREATED.value)
+
         if url["requested_resource"] == "tags":
             response = create_tag(request_body)
             return self.response(response, status.HTTP_201_SUCCESS_CREATED.value)
+
         if url["requested_resource"] == "posts":
             response = create_post(request_body)
             return self.response(response, status.HTTP_201_SUCCESS_CREATED.value)
@@ -62,12 +64,23 @@ class JSONServer(HandleRequests):
                 )
             return self.response(list_subscriptions(), status.HTTP_200_SUCCESS.value)
 
-        if url["requested_resource"] == "posts":
+        elif url["requested_resource"] == "posts":
             if url["pk"] != 0:
                 return self.response(
                     retrieve_post(url["pk"]), status.HTTP_200_SUCCESS.value
                 )
-            return self.response(list_post(), status.HTTP_200_SUCCESS.value)
+            else:
+                # Call list_post with query_params only if present, else without arguments
+                if url.get("query_params"):
+                    return self.response(
+                        list_post(url.get("query_params")),
+                        status.HTTP_200_SUCCESS.value
+                    )
+                else:
+                    return self.response(
+                        list_post(),
+                        status.HTTP_200_SUCCESS.value
+                    )
 
         elif url["requested_resource"] == "comments":
             if url["pk"] != 0:
@@ -82,20 +95,6 @@ class JSONServer(HandleRequests):
                     retrieve_reaction(url["pk"]), status.HTTP_200_SUCCESS.value
                 )
             return self.response(list_reactions(), status.HTTP_200_SUCCESS.value)
-
-        elif url["requested_resource"] == "reactions":
-            if url["pk"] != 0:
-                return self.response(
-                    retrieve_reaction(url["pk"]), status.HTTP_200_SUCCESS.value
-                )
-            return self.response(list_reactions(), status.HTTP_200_SUCCESS.value)
-
-        elif url["requested_resource"] == "postReactions":
-            if url["pk"] != 0:
-                return self.response(
-                    retrieve_postReaction(url["pk"]), status.HTTP_200_SUCCESS.value
-                )
-            return self.response(list_postReactions(), status.HTTP_200_SUCCESS.value)
 
         elif url["requested_resource"] == "postReactions":
             if url["pk"] != 0:
@@ -130,7 +129,7 @@ class JSONServer(HandleRequests):
                 json.dumps({"message": "Not Implemented"}),
                 status.HTTP_500_SERVER_ERROR.value,
             )
-    
+
     def do_PUT(self):
         url = self.parse_url(self.path)
         pk = url["pk"]
@@ -149,10 +148,10 @@ class JSONServer(HandleRequests):
                         status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value)
             else:
                 return self.response(
-                        json.dumps({"message": "Requested resource not found"}),
-                        status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
-                    )
-    
+                    json.dumps({"message": "Requested resource not found"}),
+                    status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
+                )
+
     def do_DELETE(self):
         url = self.parse_url(self.path)
         pk = url["pk"]
@@ -164,7 +163,6 @@ class JSONServer(HandleRequests):
                     return self.response("", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value)
 
                 return self.response("Requested resource not found", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value)
-                
 
 
 def main():

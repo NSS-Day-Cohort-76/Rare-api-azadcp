@@ -2,12 +2,20 @@ import json
 import sqlite3
 
 
-def list_post():
+
+def list_post(query_params=None):
     with sqlite3.connect("./db.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
 
-        # First: fetch posts with author name and category label
+        # Handle query: ?userId=1&countOnly=true
+        if query_params and query_params.get("countOnly") and query_params.get("userId"):
+            user_id = int(query_params["userId"][0])
+            db_cursor.execute("SELECT COUNT(*) AS post_count FROM Posts WHERE user_id = ?", (user_id,))
+            result = db_cursor.fetchone()
+            return json.dumps({"count": result["post_count"]})
+
+        #  Otherwise, continue as normal
         db_cursor.execute(
             """
             SELECT
@@ -28,7 +36,7 @@ def list_post():
         posts_raw = db_cursor.fetchall()
         posts = [dict(row) for row in posts_raw]
 
-        # Then: fetch all post-tag relationships
+        # Fetch tags
         db_cursor.execute(
             """
             SELECT
@@ -40,16 +48,16 @@ def list_post():
         )
         tag_rows = db_cursor.fetchall()
 
-        # Build a dictionary of post_id to tags
         tag_map = {}
         for row in tag_rows:
             tag_map.setdefault(row["post_id"], []).append(row["tag"])
 
-        # Attach tags to each post
         for post in posts:
             post["tags"] = tag_map.get(post["id"], [])
 
         return json.dumps(posts)
+
+
 
 
 
