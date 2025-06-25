@@ -73,4 +73,14 @@ def delete_category(pk):
 
     return True if number_of_rows_deleted > 0 else False
 
-# print(f"contents of ${list_categories()}")
+def update_category(pk, new_data):
+    with sqlite3.connect("./db.sqlite3") as conn:
+        db_cursor = conn.cursor()
+
+        db_cursor.execute("""
+        UPDATE Categories
+        SET label = ?
+        WHERE id = ?
+        """, (new_data["label"], pk))
+
+    return db_cursor.rowcount > 0
