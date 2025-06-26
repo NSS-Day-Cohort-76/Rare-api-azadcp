@@ -1,4 +1,4 @@
-from .subscriptions import list_subscriptions, retrieve_subscription
+from .subscriptions import create_subscription, end_subscription, check_subscription, list_subscriptions, retrieve_subscription
 from .comments_view import list_comments, retrieve_comment
 from .category_view import list_categories, retrieve_category, create_category, delete_category, update_category
 from .tags_view import list_tags, retrieve_tags, create_tag, update_tag, delete_tag
