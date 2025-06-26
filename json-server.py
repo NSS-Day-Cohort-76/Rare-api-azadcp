@@ -3,7 +3,7 @@ from nss_handler import HandleRequests, status
 import json
 from views.user import login_user, create_user
 from views import list_subscriptions, retrieve_subscription
-from views import list_comments, retrieve_comment
+from views import list_comments, retrieve_comment, create_comment, update_comment, delete_comment
 from views import list_tags, retrieve_tags, create_tag, update_tag, delete_tag
 from views import list_categories, retrieve_category, create_category, delete_category, update_category
 from views import list_postTags, retrieve_postTag
@@ -41,11 +41,15 @@ class JSONServer(HandleRequests):
         if url["requested_resource"] == "categories":
             response = create_category(request_body)
             return self.response(response, status.HTTP_201_SUCCESS_CREATED.value)
+        if url["requested_resource"] == "comments":
+            response = create_comment(request_body)
+            return self.response(response, status.HTTP_201_SUCCESS_CREATED.value)
 
         return self.response(
             json.dumps({"message": "Not found"}),
             status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
         )
+    
 
     def do_GET(self):
         url = self.parse_url(self.path)
@@ -155,7 +159,16 @@ class JSONServer(HandleRequests):
                 else:
                     return self.response(
                         json.dumps({"message": "Category not found or not updated"}),
-                        status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value)          
+                        status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value)   
+        if url["requested_resource"] == "comments":
+            if pk != 0:
+                successfully_updated = update_comment(pk, request_body) 
+                if successfully_updated:
+                    return self.response("", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value)  
+                else:
+                    return self.response(
+                        json.dumps({"message": "Category not found or not updated"}),
+                        status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value)
         else:
             return self.response(
                 json.dumps({"message": "Requested resource not found"}),
@@ -175,6 +188,11 @@ class JSONServer(HandleRequests):
         if url["requested_resource"] == "categories":
             if pk != 0:
                 successfully_deleted = delete_category(pk)
+                if successfully_deleted:
+                    return self.response("", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value)
+        if url["requested_resource"] == "comments":
+            if pk != 0:
+                successfully_deleted = delete_comment(pk)
                 if successfully_deleted:
                     return self.response("", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value)
 
