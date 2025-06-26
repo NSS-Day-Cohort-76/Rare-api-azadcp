@@ -11,7 +11,7 @@ from views import list_postReactions, retrieve_postReaction
 from views import list_reactions, retrieve_reaction
 from views import list_users, retrieve_user
 from views import list_post, retrieve_post, create_post
-
+from views import get_subscriber_count
 
 class JSONServer(HandleRequests):
     def do_POST(self):
@@ -45,20 +45,16 @@ class JSONServer(HandleRequests):
             return self.response(response, status.HTTP_201_SUCCESS_CREATED.value)
 
         if url["requested_resource"] == "subscriptions":
-            print("🔔 Received POST to /subscriptions")
-            print("📝 Request body:", request_body)
 
             follower_id = request_body.get("follower_id")
             author_id = request_body.get("author_id")
 
-            print("➡️ follower_id:", follower_id)
-            print("➡️ author_id:", author_id)
 
             if follower_id and author_id:
                 response = create_subscription(follower_id, author_id)
                 return self.response(response, status.HTTP_201_SUCCESS_CREATED.value)
             else:
-                print("❌ Missing follower_id or author_id")
+                print(" Missing follower_id or author_id")
                 return self.response(
                     json.dumps({"message": "Missing follower_id or author_id"}),
                     400
@@ -89,6 +85,10 @@ class JSONServer(HandleRequests):
                         check_subscription(follower_id, author_id),
                         status.HTTP_200_SUCCESS.value
                     )
+
+                if author_id and not follower_id:
+                    response = get_subscriber_count(author_id)
+                    return self.response(response, status.HTTP_200_SUCCESS.value)
 
             if url["pk"] != 0:
                 return self.response(
@@ -162,12 +162,10 @@ class JSONServer(HandleRequests):
         url = self.parse_url(self.path)
         pk = url["pk"]
 
-        # Handle PUT /subscriptions/<id>/end
         if url["requested_resource"] == "subscriptions" and self.path.endswith("/end") and pk != 0:
             response = end_subscription(pk)
             return self.response(response, status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value)
 
-        # Everything else continues like before
         content_len = int(self.headers.get('content-length', 0))
         request_body = self.rfile.read(content_len)
         request_body = json.loads(request_body)
@@ -230,7 +228,6 @@ class JSONServer(HandleRequests):
                     return self.response("", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value)
 
         return self.response("Requested resource not found", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value)
-
 
 def main():
     host = ""
