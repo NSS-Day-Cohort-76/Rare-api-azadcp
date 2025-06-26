@@ -1,9 +1,28 @@
-from .subscriptions import create_subscription, end_subscription, check_subscription, list_subscriptions, retrieve_subscription, get_subscriber_count
-from .comments_view import list_comments, retrieve_comment, create_comment, update_comment, delete_comment
-from .category_view import list_categories, retrieve_category, create_category, delete_category, update_category
+from .subscriptions import (
+    create_subscription,
+    end_subscription,
+    check_subscription,
+    list_subscriptions,
+    retrieve_subscription,
+    get_subscriber_count,
+)
+from .comments_view import (
+    list_comments,
+    retrieve_comment,
+    create_comment,
+    update_comment,
+    delete_comment,
+)
+from .category_view import (
+    list_categories,
+    retrieve_category,
+    create_category,
+    delete_category,
+    update_category,
+)
 from .tags_view import list_tags, retrieve_tags, create_tag, update_tag, delete_tag
 from .postTags_view import list_postTags, retrieve_postTag
 from .postReactions_view import list_postReactions, retrieve_postReaction
 from .reactions_view import list_reactions, retrieve_reaction
 from .user import list_users, retrieve_user
-from .posts_view import list_post, retrieve_post, create_post
+from .posts_view import list_post, retrieve_post, create_post, delete_post

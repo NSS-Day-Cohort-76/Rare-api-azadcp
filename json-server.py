@@ -2,16 +2,35 @@ from http.server import HTTPServer
 from nss_handler import HandleRequests, status
 import json
 from views.user import login_user, create_user
-from views import list_subscriptions, retrieve_subscription, end_subscription, create_subscription, check_subscription
-from views import list_comments, retrieve_comment, create_comment, update_comment, delete_comment
+from views import (
+    list_subscriptions,
+    retrieve_subscription,
+    end_subscription,
+    create_subscription,
+    check_subscription,
+)
+from views import (
+    list_comments,
+    retrieve_comment,
+    create_comment,
+    update_comment,
+    delete_comment,
+)
 from views import list_tags, retrieve_tags, create_tag, update_tag, delete_tag
-from views import list_categories, retrieve_category, create_category, delete_category, update_category
+from views import (
+    list_categories,
+    retrieve_category,
+    create_category,
+    delete_category,
+    update_category,
+)
 from views import list_postTags, retrieve_postTag
 from views import list_postReactions, retrieve_postReaction
 from views import list_reactions, retrieve_reaction
 from views import list_users, retrieve_user
-from views import list_post, retrieve_post, create_post
+from views import list_post, retrieve_post, create_post, delete_post
 from views import get_subscriber_count
+
 
 class JSONServer(HandleRequests):
     def do_POST(self):
@@ -49,20 +68,18 @@ class JSONServer(HandleRequests):
             follower_id = request_body.get("follower_id")
             author_id = request_body.get("author_id")
 
-
             if follower_id and author_id:
                 response = create_subscription(follower_id, author_id)
                 return self.response(response, status.HTTP_201_SUCCESS_CREATED.value)
             else:
                 print(" Missing follower_id or author_id")
                 return self.response(
-                    json.dumps({"message": "Missing follower_id or author_id"}),
-                    400
+                    json.dumps({"message": "Missing follower_id or author_id"}), 400
                 )
 
         return self.response(
             json.dumps({"message": "Not found"}),
-            status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
+            status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
         )
 
     def do_GET(self):
@@ -83,7 +100,7 @@ class JSONServer(HandleRequests):
                 if follower_id and author_id:
                     return self.response(
                         check_subscription(follower_id, author_id),
-                        status.HTTP_200_SUCCESS.value
+                        status.HTTP_200_SUCCESS.value,
                     )
 
                 if author_id and not follower_id:
@@ -103,13 +120,9 @@ class JSONServer(HandleRequests):
                 )
             if url.get("query_params"):
                 return self.response(
-                    list_post(url.get("query_params")),
-                    status.HTTP_200_SUCCESS.value
+                    list_post(url.get("query_params")), status.HTTP_200_SUCCESS.value
                 )
-            return self.response(
-                list_post(),
-                status.HTTP_200_SUCCESS.value
-            )
+            return self.response(list_post(), status.HTTP_200_SUCCESS.value)
 
         elif url["requested_resource"] == "comments":
             if url["pk"] != 0:
@@ -162,11 +175,17 @@ class JSONServer(HandleRequests):
         url = self.parse_url(self.path)
         pk = url["pk"]
 
-        if url["requested_resource"] == "subscriptions" and self.path.endswith("/end") and pk != 0:
+        if (
+            url["requested_resource"] == "subscriptions"
+            and self.path.endswith("/end")
+            and pk != 0
+        ):
             response = end_subscription(pk)
-            return self.response(response, status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value)
+            return self.response(
+                response, status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
+            )
 
-        content_len = int(self.headers.get('content-length', 0))
+        content_len = int(self.headers.get("content-length", 0))
         request_body = self.rfile.read(content_len)
         request_body = json.loads(request_body)
 
@@ -174,35 +193,44 @@ class JSONServer(HandleRequests):
             if pk != 0:
                 successfully_updated = update_tag(pk, request_body)
                 if successfully_updated:
-                    return self.response("", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value)
+                    return self.response(
+                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
+                    )
                 else:
                     return self.response(
                         json.dumps({"message": "Tag not found or not updated"}),
-                        status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value)
+                        status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
+                    )
 
         if url["requested_resource"] == "categories":
             if pk != 0:
                 successfully_updated = update_category(pk, request_body)
                 if successfully_updated:
-                    return self.response("", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value)
+                    return self.response(
+                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
+                    )
                 else:
                     return self.response(
                         json.dumps({"message": "Category not found or not updated"}),
-                        status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value)
+                        status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
+                    )
 
         if url["requested_resource"] == "comments":
             if pk != 0:
                 successfully_updated = update_comment(pk, request_body)
                 if successfully_updated:
-                    return self.response("", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value)
+                    return self.response(
+                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
+                    )
                 else:
                     return self.response(
                         json.dumps({"message": "Comment not found or not updated"}),
-                        status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value)
+                        status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
+                    )
 
         return self.response(
             json.dumps({"message": "Requested resource not found"}),
-            status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
+            status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
         )
 
     def do_DELETE(self):
@@ -213,26 +241,45 @@ class JSONServer(HandleRequests):
             if pk != 0:
                 successfully_deleted = delete_tag(pk)
                 if successfully_deleted:
-                    return self.response("", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value)
+                    return self.response(
+                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
+                    )
 
         if url["requested_resource"] == "categories":
             if pk != 0:
                 successfully_deleted = delete_category(pk)
                 if successfully_deleted:
-                    return self.response("", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value)
+                    return self.response(
+                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
+                    )
 
         if url["requested_resource"] == "comments":
             if pk != 0:
                 successfully_deleted = delete_comment(pk)
                 if successfully_deleted:
-                    return self.response("", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value)
+                    return self.response(
+                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
+                    )
 
-        return self.response("Requested resource not found", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value)
+        if url["requested_resource"] == "posts":
+            if pk != 0:
+                successfully_deleted = delete_post(pk)
+                if successfully_deleted:
+                    return self.response(
+                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
+                    )
+
+        return self.response(
+            "Requested resource not found",
+            status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
+        )
+
 
 def main():
     host = ""
     port = 8000
     HTTPServer((host, port), JSONServer).serve_forever()
+
 
 if __name__ == "__main__":
     main()
