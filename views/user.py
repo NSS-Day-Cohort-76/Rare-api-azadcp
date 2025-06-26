@@ -4,15 +4,7 @@ from datetime import datetime
 
 
 def login_user(user):
-    """Checks for the user in the database
-
-    Args:
-        user (dict): Contains the username and password of the user trying to login
-
-    Returns:
-        json string: If the user was found will return valid boolean of True and the user's id as the token
-                     If the user was not found will return valid boolean False
-    """
+ 
     with sqlite3.connect("./db.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
@@ -30,9 +22,16 @@ def login_user(user):
         user_from_db = db_cursor.fetchone()
 
         if user_from_db is not None:
-            response = {"valid": True, "token": user_from_db["id"]}
+    # Generate a real token or use user ID as token (if you want)
+          # or better: generate JWT or similar token
+          response = {
+            "valid": True,
+            "token": str(user_from_db["id"]),
+            "userId": user_from_db["id"]  # add this so frontend gets user id separately
+       }
         else:
-            response = {"valid": False}
+         response = {"valid": False}
+
 
         return json.dumps(response)
 
