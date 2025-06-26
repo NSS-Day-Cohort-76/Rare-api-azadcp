@@ -141,3 +141,5 @@ INSERT INTO PostTags (post_id, tag_id) VALUES
 (1, 3),
 (2, 1),
 (5, 2);
+
+SELECT * FROM Subscriptions WHERE follower_id = 1 AND author_id = 4;
