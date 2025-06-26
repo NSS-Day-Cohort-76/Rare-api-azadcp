@@ -74,14 +74,12 @@ def list_subscriptions():
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
 
-        # Get all subscriptions, optionally filter ended_on IS NULL if you want only active
         db_cursor.execute("""
             SELECT * FROM Subscriptions
             WHERE ended_on IS NULL
         """)
 
         subscriptions = db_cursor.fetchall()
-        # Convert rows to list of dicts
         return json.dumps([dict(row) for row in subscriptions])
 
 def retrieve_subscription(subscription_id):
@@ -100,3 +98,17 @@ def retrieve_subscription(subscription_id):
             return json.dumps(dict(subscription))
         else:
             return json.dumps(None)
+
+# NEW function to get count of active subscribers for an author
+def get_subscriber_count(author_id):
+    with sqlite3.connect("./db.sqlite3") as conn:
+        db_cursor = conn.cursor()
+
+        db_cursor.execute("""
+            SELECT COUNT(*) AS subscriber_count
+            FROM Subscriptions
+            WHERE author_id = ? AND ended_on IS NULL
+        """, (author_id,))
+
+        count = db_cursor.fetchone()[0]
+        return json.dumps({"subscriber_count": count})
