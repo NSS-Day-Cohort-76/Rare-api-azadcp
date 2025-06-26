@@ -6,7 +6,7 @@ from views import (
     check_subscription, list_subscriptions, retrieve_subscription, end_subscription, create_subscription,
     list_comments, retrieve_comment,
     list_tags, retrieve_tags, create_tag, update_tag, delete_tag,
-    list_categories, retrieve_category,
+    list_categories, retrieve_category, create_category, delete_category, update_category,
     list_postTags, retrieve_postTag,
     list_postReactions, retrieve_postReaction,
     list_reactions, retrieve_reaction,
@@ -138,7 +138,7 @@ class JSONServer(HandleRequests):
                 return self.response(
                     retrieve_postTag(url["pk"]), status.HTTP_200_SUCCESS.value
                 )
-            return self.response(list_postTags(), status.HTTP_200_SUCCESS.value)
+            return self.response(list_postTags(url), status.HTTP_200_SUCCESS.value)
 
         elif url["requested_resource"] == "categories":
             if url["pk"] != 0:
@@ -171,11 +171,21 @@ class JSONServer(HandleRequests):
                     return self.response(
                         json.dumps({"message": "Tag not found or not updated"}),
                         status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value)
-            else:
-                return self.response(
-                    json.dumps({"message": "Requested resource not found"}),
-                    status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
-                )
+                
+        if url["requested_resource"] == "categories":
+            if pk != 0:
+                successfully_updated = update_category(pk, request_body)
+                if successfully_updated:
+                  return self.response("", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value)
+                else:
+                    return self.response(
+                        json.dumps({"message": "Category not found or not updated"}),
+                        status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value)          
+        else:
+            return self.response(
+                json.dumps({"message": "Requested resource not found"}),
+                status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
+            )
 
         if url["requested_resource"] == "subscriptions":
             if self.path.endswith("/end") and pk != 0:
@@ -191,8 +201,16 @@ class JSONServer(HandleRequests):
                 successfully_deleted = delete_tag(pk)
                 if successfully_deleted:
                     return self.response("", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value)
+                
+        if url["requested_resource"] == "categories":
+            if pk != 0:
+                successfully_deleted = delete_category(pk)
+                if successfully_deleted:
+                    return self.response("", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value)
 
-                return self.response("Requested resource not found", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value)
+        else:
+            return self.response("Requested resource not found", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value)
+                
 
 def main():
     host = ""

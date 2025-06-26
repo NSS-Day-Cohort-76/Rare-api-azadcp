@@ -59,6 +59,28 @@ def create_category(request_body):
             "label": request_body["label"]
         })
 
+def delete_category(pk):
+    with sqlite3.connect("./db.sqlite3") as conn:
+        db_cursor = conn.cursor()
 
+        db_cursor.execute("""
+        DELETE FROM Categories 
+        WHERE id = ?
+        """,
+            (pk,),
+        )
+        number_of_rows_deleted = db_cursor.rowcount
 
-# print(f"contents of ${list_categories()}")
+    return True if number_of_rows_deleted > 0 else False
+
+def update_category(pk, new_data):
+    with sqlite3.connect("./db.sqlite3") as conn:
+        db_cursor = conn.cursor()
+
+        db_cursor.execute("""
+        UPDATE Categories
+        SET label = ?
+        WHERE id = ?
+        """, (new_data["label"], pk))
+
+    return db_cursor.rowcount > 0

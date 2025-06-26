@@ -137,8 +137,7 @@ INSERT INTO Tags (label) VALUES
 INSERT INTO Reactions (label, image_url) VALUES
 ('happy', 'https://pngtree.com/so/happy');
 
-
-SELECT * FROM Subscriptions WHERE ended_on IS NULL;
-
-
-
+INSERT INTO PostTags (post_id, tag_id) VALUES
+(1, 3),
+(2, 1),
+(5, 2);
