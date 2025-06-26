@@ -38,6 +38,7 @@ CREATE TABLE Subscriptions (
     follower_id INTEGER,
     author_id INTEGER,
     created_on DATE,
+    ended_on DATE,
     FOREIGN KEY(follower_id) REFERENCES Users(id),
     FOREIGN KEY(author_id) REFERENCES Users(id)
 );
@@ -123,12 +124,12 @@ INSERT INTO Comments (post_id, author_id, content) VALUES
 (4, 1, 'See y’all at the farmers market!'),
 (5, 2, 'Is this still available?');
 
-INSERT INTO Subscriptions (follower_id, author_id, created_on) VALUES
-(2, 1, '2025-06-06'),
-(3, 1, '2025-06-06'),
-(4, 2, '2025-06-07'),
-(5, 3, '2025-06-08'),
-(1, 4, '2025-06-09');
+INSERT INTO Subscriptions (follower_id, author_id, created_on, ended_on) VALUES
+(2, 1, '2025-06-06', NULL),
+(3, 1, '2025-06-06', NULL),
+(4, 2, '2025-06-07', NULL),
+(5, 3, '2025-06-08', NULL),
+(1, 4, '2025-06-09', NULL);
 
 INSERT INTO Tags (label) VALUES
 ('JavaScript'), ('Nashville'), ('Food'), ('Brunch'), ('Music'), ('Outdoors');

@@ -18,6 +18,9 @@ def list_post(query_params=None):
                 "SELECT COUNT(*) AS post_count FROM Posts WHERE user_id = ?",
                 (user_id,),
             )
+            db_cursor.execute(
+                "SELECT COUNT(*) AS post_count FROM Posts WHERE user_id = ?", (user_id,)
+            )
             result = db_cursor.fetchone()
             return json.dumps({"count": result["post_count"]})
 
@@ -145,6 +148,15 @@ def create_post(post_data):
             INSERT INTO Posts (user_id, category_id, title, publication_date, image_url, content, approved)
             VALUES (?, ?, ?, ?, ?, ?, ?)
             """,
+            (
+                post_data["user_id"],
+                post_data["category_id"],
+                post_data["title"],
+                post_data["publication_date"],
+                post_data["image_url"],
+                post_data["content"],
+                post_data["approved"],
+            ),
             (
                 post_data["user_id"],
                 post_data["category_id"],
