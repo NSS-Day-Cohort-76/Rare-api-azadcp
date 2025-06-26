@@ -1,45 +1,102 @@
 import sqlite3
 import json
+from datetime import datetime
 
+def create_subscription(follower_id, author_id):
 
-def list_subscriptions():
     with sqlite3.connect("./db.sqlite3") as conn:
         db_cursor = conn.cursor()
+        now = datetime.now().isoformat()
 
         db_cursor.execute(
             """
-            SELECT
-                s.id,
-                s.follower_id,
-                s.author_id,
-                s.created_on
-            FROM Subscriptions s
-            
-            """
+            INSERT INTO Subscriptions (follower_id, author_id, created_on)
+            VALUES (?, ?, ?)
+            """,
+            (follower_id, author_id, now),
         )
-        query_results = db_cursor.fetchall()
-        subscriptions = [dict(row) for row in query_results]
-        serialized_subs = json.dumps(subscriptions)
-    return serialized_subs
+        conn.commit()
 
+        subscription_id = db_cursor.lastrowid
+        return json.dumps({
+            "id": subscription_id,
+            "follower_id": follower_id,
+            "author_id": author_id,
+            "created_on": now
+        })
 
-def retrieve_subscription(pk, url=None):
+def end_subscription(subscription_id):
+    """Update the subscription's end datetime to current datetime"""
+    with sqlite3.connect("./db.sqlite3") as conn:
+        db_cursor = conn.cursor()
+        now = datetime.now().isoformat()
+
+        db_cursor.execute(
+            """
+            UPDATE Subscriptions
+            SET ended_on = ?
+            WHERE id = ?
+            """,
+            (now, subscription_id)
+        )
+        conn.commit()
+
+        # Optionally return success message or updated subscription
+        return json.dumps({"message": "Subscription ended", "subscription_id": subscription_id})
+
+def check_subscription(follower_id, author_id):
+    follower_id = int(follower_id)
+    author_id = int(author_id)
+    print(f"Backend check_subscription called with follower_id={follower_id}, author_id={author_id}")
+
     with sqlite3.connect("./db.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
+
+        # Only active subscriptions (where ended_on is NULL)
         db_cursor.execute(
             """
-            SELECT
-                s.id,
-                s.follower_id,
-                s.author_id,
-                s.created_on
-            FROM Subscriptions s
-            WHERE s.id = ?
+            SELECT *
+            FROM Subscriptions
+            WHERE follower_id = ? AND author_id = ? AND ended_on IS NULL
             """,
-            (pk,),
+            (follower_id, author_id)
         )
-        query_results = db_cursor.fetchone()
-        dictionary_version = dict(query_results)
-        serial_sub = json.dumps(dictionary_version)
-    return serial_sub
+        subscription = db_cursor.fetchone()
+        if subscription:
+            return json.dumps(dict(subscription))
+        else:
+            return json.dumps(None)
+
+def list_subscriptions():
+    """Return all active subscriptions as JSON list"""
+    with sqlite3.connect("./db.sqlite3") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        # Get all subscriptions, optionally filter ended_on IS NULL if you want only active
+        db_cursor.execute("""
+            SELECT * FROM Subscriptions
+            WHERE ended_on IS NULL
+        """)
+
+        subscriptions = db_cursor.fetchall()
+        # Convert rows to list of dicts
+        return json.dumps([dict(row) for row in subscriptions])
+
+def retrieve_subscription(subscription_id):
+    """Return a single subscription by id as JSON"""
+    with sqlite3.connect("./db.sqlite3") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        db_cursor.execute("""
+            SELECT * FROM Subscriptions
+            WHERE id = ?
+        """, (subscription_id,))
+
+        subscription = db_cursor.fetchone()
+        if subscription:
+            return json.dumps(dict(subscription))
+        else:
+            return json.dumps(None)
