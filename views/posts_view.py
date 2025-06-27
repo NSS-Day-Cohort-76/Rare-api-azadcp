@@ -246,3 +246,32 @@ def delete_post(pk):
         number_of_rows_deleted = db_cursor.rowcount
 
     return True if number_of_rows_deleted > 0 else False
+
+
+def update_post(pk, post_data):
+    with sqlite3.connect("./db.sqlite3") as conn:
+        db_cursor = conn.cursor()
+        db_cursor.execute(
+            """
+            UPDATE Posts
+            SET category_id = ?, title = ?, publication_date = ?, image_url = ?, content = ?, approved = ?
+            WHERE id = ?
+            """,
+            (
+                post_data["category_id"],
+                post_data["title"],
+                post_data["publication_date"],
+                post_data["image_url"],
+                post_data["content"],
+                post_data["approved"],
+                pk,
+            ),
+        )
+        
+        db_cursor.execute("DELETE FROM PostTags WHERE post_id = ?", (pk,))
+        for tag_id in post_data.get("tags", []):
+            db_cursor.execute(
+                "INSERT INTO PostTags (post_id, tag_id) VALUES (?, ?)",
+                (pk, tag_id),
+            )
+    return True

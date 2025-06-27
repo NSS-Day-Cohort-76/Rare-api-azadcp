@@ -36,6 +36,7 @@ from views import (
     retrieve_post,
     create_post,
     delete_post,
+    update_post,
     get_subscriber_count,
 )
 
@@ -182,11 +183,23 @@ class JSONServer(HandleRequests):
                 return self.response("", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value)
             return self.response(json.dumps({"message": "Category not found or not updated"}), status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value)
 
-        # --- Comment update ---
+          # --- Comment update ---
         if resource == "comments" and pk != 0:
             if update_comment(pk, body):
                 return self.response("", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value)
             return self.response(json.dumps({"message": "Comment not found or not updated"}), status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value)
+
+        if resource == "posts" and pk != 0:
+                successfully_updated = update_post(pk, body)
+                if successfully_updated:
+                    return self.response(
+                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
+                    )
+                else:
+                    return self.response(
+                        json.dumps({"message": "Post not found or not updated"}),
+                        status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
+                    )
 
         return self.response(json.dumps({"message": "Requested resource not found"}), status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value)
 
