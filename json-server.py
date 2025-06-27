@@ -36,18 +36,9 @@ from views import (
     retrieve_post,
     create_post,
     delete_post,
+    update_post,
     get_subscriber_count,
 )
-<<<<<<< HEAD
-from views import list_postTags, retrieve_postTag
-from views import list_postReactions, retrieve_postReaction
-from views import list_reactions, retrieve_reaction
-from views import list_users, retrieve_user
-from views import list_post, retrieve_post, create_post, delete_post, update_post
-from views import get_subscriber_count
-
-=======
->>>>>>> develop
 
 class JSONServer(HandleRequests):
     def do_POST(self):
