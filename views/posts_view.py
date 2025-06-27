@@ -18,15 +18,11 @@ def list_post(query_params=None):
                 "SELECT COUNT(*) AS post_count FROM Posts WHERE user_id = ?",
                 (user_id,),
             )
-            db_cursor.execute(
-                "SELECT COUNT(*) AS post_count FROM Posts WHERE user_id = ?", (user_id,)
-            )
             result = db_cursor.fetchone()
             return json.dumps({"count": result["post_count"]})
 
         # 🔥 Otherwise, get all posts with authors and categories
-        db_cursor.execute(
-            """
+        sql = """
             SELECT
                 p.id,
                 p.user_id,
@@ -42,8 +38,16 @@ def list_post(query_params=None):
             FROM Posts p
             JOIN Users u ON p.user_id = u.id
             JOIN Categories c ON p.category_id = c.id
-            """
-        )
+        """
+
+        params = []
+
+        # ✅ Optional: filter by category_id
+        if query_params and query_params.get("category_id"):
+            sql += " WHERE p.category_id = ?"
+            params.append(int(query_params["category_id"][0]))
+
+        db_cursor.execute(sql, params)
         posts_raw = db_cursor.fetchall()
 
         # Convert to list of dictionaries
