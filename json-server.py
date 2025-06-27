@@ -28,7 +28,7 @@ from views import list_postTags, retrieve_postTag
 from views import list_postReactions, retrieve_postReaction
 from views import list_reactions, retrieve_reaction
 from views import list_users, retrieve_user
-from views import list_post, retrieve_post, create_post, delete_post
+from views import list_post, retrieve_post, create_post, delete_post, update_post
 from views import get_subscriber_count
 
 
@@ -227,6 +227,19 @@ class JSONServer(HandleRequests):
                         json.dumps({"message": "Comment not found or not updated"}),
                         status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
                     )
+        if url["requested_resource"] == "posts":
+            if pk != 0:
+                successfully_updated = update_post(pk, request_body)
+                if successfully_updated:
+                    return self.response(
+                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
+                    )
+                else:
+                    return self.response(
+                        json.dumps({"message": "Post not found or not updated"}),
+                        status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
+                    )
+
 
         return self.response(
             json.dumps({"message": "Requested resource not found"}),

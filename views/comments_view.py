@@ -8,8 +8,7 @@ def list_comments():
         db_cursor = conn.cursor()
 
         db_cursor.execute(
-            """
-            SELECT
+            """ 
                 c.id,
                 c.post_id,
                 c.author_id,
