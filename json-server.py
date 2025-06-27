@@ -189,9 +189,8 @@ class JSONServer(HandleRequests):
                 return self.response("", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value)
             return self.response(json.dumps({"message": "Comment not found or not updated"}), status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value)
 
-        if resource == "posts":
-            if pk != 0:
-                successfully_updated = update_post(pk, request_body)
+        if resource == "posts" and pk != 0:
+                successfully_updated = update_post(pk, body)
                 if successfully_updated:
                     return self.response(
                         "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
