@@ -161,15 +161,6 @@ def create_post(post_data):
                 post_data["content"],
                 post_data["approved"],
             ),
-            (
-                post_data["user_id"],
-                post_data["category_id"],
-                post_data["title"],
-                post_data["publication_date"],
-                post_data["image_url"],
-                post_data["content"],
-                post_data["approved"],
-            ),
         )
 
         new_id = db_cursor.lastrowid
