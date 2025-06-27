@@ -101,11 +101,11 @@ CREATE TABLE PostTags (
 
 -- Seed data
 INSERT INTO Users (first_name, last_name, email, bio, username, password, profile_image_url, created_on, active, isAdmin, isAuthor) VALUES
-('Jamie', 'Smith', 'jamie@example.com', 'Photographer and foodie.', 'jamies', 'password123', '', '2025-06-01', 1, 1, 1),
+('Jamie', 'Smith', 'jamie@example.com', 'Photographer and foodie.', 'jamies', 'password123', 'https://images.pexels.com/photos/1036623/pexels-photo-1036623.jpeg', '2025-06-01', 1, 1, 1),
 ('Riley', 'Jones', 'riley@example.com', 'Lover of coffee and cats.', 'rjones', 'password123', 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg', '2025-06-02', 1, 0, 1),
-('Taylor', 'Lee', 'taylor@example.com', 'News junkie and podcast addict.', 'tlee', 'password123', '', '2025-06-03', 1, 0, 1),
-('Jordan', 'Kim', 'jordan@example.com', 'DIY enthusiast. Posts every Sunday.', 'jkim', 'password123', '', '2025-06-04', 1, 0, 1),
-('Morgan', 'Ray', 'morgan@example.com', 'Weekend brunch warrior.', 'mray', 'password123', '', '2025-06-05', 1, 0, 1);
+('Taylor', 'Lee', 'taylor@example.com', 'News junkie and podcast addict.', 'tlee', 'password123', 'https://images.pexels.com/photos/874158/pexels-photo-874158.jpeg', '2025-06-03', 1, 0, 1),
+('Jordan', 'Kim', 'jordan@example.com', 'DIY enthusiast. Posts every Sunday.', 'jkim', 'password123', 'https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg', '2025-06-04', 1, 0, 1),
+('Morgan', 'Ray', 'morgan@example.com', 'Weekend brunch warrior.', 'mray', 'password123', 'https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg', '2025-06-05', 1, 0, 1);
 
 INSERT INTO Categories (label) VALUES
 ('News'), ('Politics'), ('Sports'), ('Local'), ('Events'), ('Classifieds');
@@ -142,4 +142,3 @@ INSERT INTO PostTags (post_id, tag_id) VALUES
 (2, 1),
 (5, 2);
 
-SELECT * FROM Subscriptions WHERE follower_id = 1 AND author_id = 4;
